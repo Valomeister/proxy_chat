@@ -12,7 +12,7 @@ class Message(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
-    sender_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    sender_tg_id: Mapped[int] = mapped_column(ForeignKey("users.tg_id"))
 
     text: Mapped[str] = mapped_column(Text)
 

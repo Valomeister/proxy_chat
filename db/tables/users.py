@@ -11,35 +11,41 @@ from db.tables.orders import Order
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    tg_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
 
-    tg_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True)
+    # id of the chat with tg bot
+    tg_chat_id: Mapped[int] = mapped_column(BigInteger)
 
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.datetime.now(datetime.UTC)
     )
 
-    workers: Mapped[list["ManagerWorker"]] = relationship(
-        foreign_keys="ManagerWorker.manager_id",
+    workers_links_as_manager: Mapped[list["ManagerWorker"]] = relationship(
+        foreign_keys="ManagerWorker.manager_tg_id",
         back_populates="manager",
         cascade="all, delete-orphan",
     )
 
+    workers_links_as_worker: Mapped[list["ManagerWorker"]] = relationship(
+        foreign_keys="ManagerWorker.worker_tg_id",
+        back_populates="worker",
+    )
+
     orders_as_manager: Mapped[List["Order"]] = relationship(
-        foreign_keys="Order.manager_id",
+        foreign_keys="Order.manager_tg_id",
         back_populates="manager",
     )
 
     orders_as_worker: Mapped[List["Order"]] = relationship(
-        foreign_keys="Order.worker_id",
+        foreign_keys="Order.worker_tg_id",
         back_populates="worker",
     )
 
     orders_as_customer: Mapped[List["Order"]] = relationship(
-        foreign_keys="Order.customer_id",
+        foreign_keys="Order.customer_tg_id",
         back_populates="customer",
     )
 
     def __repr__(self):
-        return f'User(id={self.id}, tg_id={self.tg_id})'
+        return f'User(tg_id={self.tg_id})'

@@ -19,9 +19,9 @@ class Order(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
-    manager_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    worker_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    customer_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    manager_tg_id: Mapped[int] = mapped_column(ForeignKey("users.tg_id"))
+    worker_tg_id: Mapped[int | None] = mapped_column(ForeignKey("users.tg_id"), nullable=True)
+    customer_tg_id: Mapped[int | None] = mapped_column(ForeignKey("users.tg_id"), nullable=True)
 
     deadline: Mapped[datetime.datetime | None] = mapped_column(
         DateTime(timezone=True),
@@ -29,7 +29,7 @@ class Order(Base):
     )
 
     price: Mapped[Numeric] = mapped_column(Numeric(10, 2))
-    paycheck: Mapped[float] = mapped_column(Numeric(10, 2))
+    paycheck: Mapped[Numeric] = mapped_column(Numeric(10, 2))
 
     status: Mapped[OrderStatus] = mapped_column(
         Enum(OrderStatus),
@@ -42,17 +42,17 @@ class Order(Base):
     )
 
     manager: Mapped["User"] = relationship(
-        foreign_keys=[manager_id],
+        foreign_keys=[manager_tg_id],
         back_populates="orders_as_manager",
     )
 
     worker: Mapped["User | None"] = relationship(
-        foreign_keys=[worker_id],
+        foreign_keys=[worker_tg_id],
         back_populates="orders_as_worker",
     )
 
     customer: Mapped["User | None"] = relationship(
-        foreign_keys=[customer_id],
+        foreign_keys=[customer_tg_id],
         back_populates="orders_as_customer",
     )
 

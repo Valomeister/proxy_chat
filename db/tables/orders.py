@@ -1,7 +1,8 @@
 import datetime
 import enum
+from decimal import Decimal
 
-from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, Numeric
+from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.base import Base
@@ -14,10 +15,25 @@ class OrderStatus(str, enum.Enum):
     cancelled = "cancelled"
 
 
+ORDER_STATUS_RU = {
+    OrderStatus.created: "в процессе",
+    OrderStatus.cancelled: "отменен",
+    OrderStatus.completed: "завершен"
+}
+
+ORDER_STATUS_EMOJI = {
+    OrderStatus.created: "🟡",
+    OrderStatus.cancelled: "🔴",
+    OrderStatus.completed: "🟢"
+}
+
+
 class Order(Base):
     __tablename__ = "orders"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+    title: Mapped[str] = mapped_column(String)
 
     manager_tg_id: Mapped[int] = mapped_column(ForeignKey("users.tg_id"))
     worker_tg_id: Mapped[int | None] = mapped_column(ForeignKey("users.tg_id"), nullable=True)
@@ -28,8 +44,8 @@ class Order(Base):
         nullable=True,
     )
 
-    price: Mapped[Numeric] = mapped_column(Numeric(10, 2))
-    paycheck: Mapped[Numeric] = mapped_column(Numeric(10, 2))
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    paycheck: Mapped[Decimal] = mapped_column(Numeric(10, 2))
 
     status: Mapped[OrderStatus] = mapped_column(
         Enum(OrderStatus),

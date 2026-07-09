@@ -28,6 +28,7 @@ class ManagerWorkerRepository:
                 selectinload(ManagerWorker.worker),
             )
             .where(*filters)
+            .order_by(ManagerWorker.id.desc())
         )
 
         result = await session.scalars(query)

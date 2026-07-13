@@ -56,5 +56,19 @@ class ChatRepository:
         )
 
         return result.scalars().all()
+    
+
+    @staticmethod
+    async def get_message_by_id(
+        session: AsyncSession,
+        message_id: int,
+    ) -> Message:
+
+        result = await session.execute (
+            select(Message)
+            .where(Message.id == message_id)
+        )
+
+        return result.scalar_one_or_none()
 
     

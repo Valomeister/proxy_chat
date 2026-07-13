@@ -1,11 +1,14 @@
+import datetime
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.tables.managers_workers import ManagerWorker
 from db.tables.orders import Order
-from db.tables.messages import Message
+from db.tables.messages import Message, MessageType
 from repositories.chat_repository import ChatRepository
 from api.schemas.chat import ChatSchema
 from api.schemas.message import MessageSchema
+from services.crypto_service import CryptoService
 
 
 
@@ -28,7 +31,9 @@ class ChatService:
                 ChatSchema(
                     id=str(order.id),
                     title=order.title,
-                    last_message=last_message,
+                    last_message=CryptoService.decrypt(last_message)
+                    if last_message
+                    else None,
                     price=float(order.price)
                     if tg_id in (order.customer_tg_id, order.manager_tg_id) and order.price is not None
                     else None,
@@ -56,9 +61,10 @@ class ChatService:
                 MessageSchema(
                     id=m.id,
                     sender_tg_id=m.sender_tg_id,
-                    text=m.text,
+                    text=CryptoService.decrypt(m.text),
                     sent_at=m.sent_at,
                     read_at=m.read_at,
+                    type=m.type,
                 )
             )
 
@@ -69,13 +75,15 @@ class ChatService:
         session: AsyncSession,
         order_id: int,
         sender_tg_id: int,
-        text: str
+        text: str,
+        type: MessageType | None = None
     ) -> Message:
-
+        
         message = Message(
             order_id=order_id,
             sender_tg_id=sender_tg_id,
-            text=text
+            text=CryptoService.encrypt(text),
+            type=type
         )
 
         session.add(message)
@@ -83,3 +91,26 @@ class ChatService:
         await session.refresh(message)
 
         return message
+    
+
+    @staticmethod
+    async def get_message_by_id(
+        session: AsyncSession,
+        message_id: int,
+    ) -> Message:
+        
+        message = await ChatRepository.get_message_by_id(session, message_id)
+
+        return message
+
+
+    @staticmethod
+    async def read_message(
+        session: AsyncSession,
+        message: Message,
+    ) -> None:
+        
+        message.read_at = datetime.datetime.now(datetime.UTC)
+        
+        await session.commit()
+

@@ -587,7 +587,7 @@ async def process_paycheck(message: types.Message, state: FSMContext):
         "Вы создали новый заказ"
     )
 
-    await display_order_detail(message, order, message.from_user.id, link, in_place=False)
+    await display_order_detail(message, order, message.from_user.id, link, in_place=False, back_destination='manu')
 
     await message.answer(
         f"Ссылка для добавления клиента в чат: \n"

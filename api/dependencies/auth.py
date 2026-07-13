@@ -36,7 +36,7 @@ async def get_current_telegram_user(
 
     except TelegramAuthError as e:
         return {
-            'id': 1, 
+            'id': 2, 
             'first_name': 'Кто-то', 
             'last_name': '', 
             'username': '@somebody', 

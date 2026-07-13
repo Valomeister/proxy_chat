@@ -16,6 +16,8 @@ class User(Base):
     # id of the chat with tg bot
     tg_chat_id: Mapped[int] = mapped_column(BigInteger)
 
+    tg_username: Mapped[str | None] = mapped_column(String)
+
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.datetime.now(datetime.UTC)

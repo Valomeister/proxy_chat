@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.tables.managers_workers import ManagerWorker
@@ -7,8 +9,8 @@ from repositories.user_repository import UserRepository
 
 class UserService:
     @staticmethod
-    async def create(session: AsyncSession, tg_id: int, tg_chat_id: int) -> User:
-        user = await UserRepository.create_user(session, tg_id, tg_chat_id)
+    async def create(session: AsyncSession, tg_id: int, tg_chat_id: int, tg_username: str | None) -> User:
+        user = await UserRepository.create_user(session, tg_id, tg_chat_id, tg_username)
         await session.commit()
 
         return user
@@ -38,3 +40,19 @@ class UserService:
             return user.tg_chat_id
 
         return None
+
+    @staticmethod
+    async def get_usernames_by_tg_ids(
+        session: AsyncSession,
+        tg_ids: List[int | None]
+    ) -> dict[int, str]:
+        not_none_ids = [tg_id for tg_id in tg_ids if tg_id is not None]
+
+        users = await UserRepository.get_by_tg_ids(session, not_none_ids)
+
+        usernames = {
+            user.tg_id: user.tg_username
+            for user in users
+        }
+
+        return usernames

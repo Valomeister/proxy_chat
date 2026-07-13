@@ -28,6 +28,7 @@ from db.tables.users import User
 from db.tables.orders import Order
 from db.tables.messages import Message
 from db.tables.managers_workers import ManagerWorker
+from db.tables.notification_channels import NotificationChannel
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

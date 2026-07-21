@@ -116,7 +116,7 @@ async def process_paycheck(message: types.Message, state: FSMContext):
     await state.clear()
 
     async with SessionLocal() as session:
-        order = await OrderService.create(
+        order, worker_link, customer_link = await OrderService.create(
             session,
             title=data['title'],
             manager_tg_id=message.from_user.id,
@@ -146,12 +146,12 @@ async def process_paycheck(message: types.Message, state: FSMContext):
     await message.answer(
         f"Ссылка для добавления исполнителя в чат по заказу \n"
         f"<b>#{order.id} {order.title}</b>\n\n"
-        f"t.me/transparent_chat_bot?start=winv_{order.id}"
+        f"t.me/transparent_chat_bot?start=inv_{worker_link.id}_{worker_link.secret_key}"
     )
     await message.answer(
         f"Ссылка для добавления клиента в чат по заказу \n"
         f"<b>#{order.id} {order.title}</b>\n\n"
-        f"t.me/transparent_chat_bot?start=cinv_{order.id}"
+        f"t.me/transparent_chat_bot?start=inv_{customer_link.id}_{customer_link.secret_key}"
     )
 
 

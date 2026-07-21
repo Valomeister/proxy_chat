@@ -9,6 +9,7 @@ from db.tables.managers_workers import ManagerWorker
 from db.tables.orders import OrderStatus
 from db.tables.users import Order
 from repositories.order_repository import OrderRepository
+from services.invitation_service import InvitationService, InvitationRole
 
 
 class OrderService:
@@ -35,10 +36,16 @@ class OrderService:
             paycheck=paycheck,
             status=status,
         )
+        
+        # worker invitation
+        worker_link = await InvitationService.create(session, new_order.id, InvitationRole.worker)
+        
+        # customer invitation
+        customer_link = await InvitationService.create(session, new_order.id, InvitationRole.customer)
 
         await session.commit()
 
-        return new_order
+        return new_order, worker_link, customer_link
 
     @staticmethod
     async def get_by_id(session: AsyncSession, order_id: int) -> Order | None:

@@ -3,7 +3,7 @@ from decimal import Decimal
 from zoneinfo import ZoneInfo
 
 from aiogram import types
-from aiogram.types import InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
 from bot_v2.keyboards import orders_keyboard, order_edit_keyboard, order_detail_keyboard
 from bot_v2.utils import format_timedelta
@@ -163,6 +163,13 @@ async def validate_money_message(message):
 
 
 async def send_message_or_print(bot, chat_id, text, tg_id=None, reply_markup=None):
+    if reply_markup is None:
+        reply_markup = InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(
+                text='Открыть чат',
+                web_app=WebAppInfo(url=f"https://wdraft.online/#/chat/{chat_id}")
+            )   
+        ]])
     try:
         await bot.send_message(
             chat_id=chat_id,
@@ -173,3 +180,15 @@ async def send_message_or_print(bot, chat_id, text, tg_id=None, reply_markup=Non
         print(f"Falied while trying to send message to user tg_id={tg_id if tg_id else 'unknown'} ({chat_id=})")
         print(text)
         print(e)
+
+
+async def answer_msg_with_chat_link(message, text, order_id):
+    await message.answer(
+        text,
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(
+                text='Открыть чат',
+                web_app=WebAppInfo(url=f"https://wdraft.online/#/chat/{order_id}")
+            )   
+        ]])
+    )

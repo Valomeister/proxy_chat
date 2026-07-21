@@ -29,6 +29,7 @@ from db.tables.orders import Order
 from db.tables.messages import Message
 from db.tables.managers_workers import ManagerWorker
 from db.tables.notification_channels import NotificationChannel
+from db.tables.invitations import Invitation
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

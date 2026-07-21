@@ -573,7 +573,7 @@ async def process_paycheck(message: types.Message, state: FSMContext):
 
     async with SessionLocal() as session:
         link = await ManagerWorkerService.get_by_id(session, data['worker'])
-        order = await OrderService.create(
+        order, _, _ = await OrderService.create(
             session,
             title=data['title'],
             manager_tg_id=message.from_user.id,

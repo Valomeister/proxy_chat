@@ -49,10 +49,9 @@ async def get_current_telegram_user(
             init_data,
             BOT_TOKEN
         )
-
     except TelegramAuthError as e:
         # dev bypass
-        if (request and request.headers.get("X-Dev-Auth") == DEV_AUTH_TOKEN 
+        if (request and request.headers.get("x-real-ip") == DEV_IP 
                 or websocket and websocket.headers.get("x-real-ip") == DEV_IP):
             return DEV_USER
         print(2)

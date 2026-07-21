@@ -163,10 +163,13 @@ async def show_money_formats(
     await callback.answer()
     await callback.message.edit_text(
         f"{callback.message.text.split('\n')[0]}\n\n"
-        f"Примеры допустимых форматов:\n"
+        f"<b>Примеры допустимых форматов:</b>\n"
         f"- 1000\n"
         f"- 49.50\n"
-        f"- 99,99",
+        f"- 99,99\n\n"
+        f"<b>Диапазон:</b>\n"
+        f"- не менее -99 999 999,99\n"
+        f"- не более 99 999 999,99\n",
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=input_format_keyboard(action='hide', callback_class=MoneyCallback)
         )

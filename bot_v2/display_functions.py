@@ -147,6 +147,12 @@ async def validate_deadline_message(message: types.Message):
 async def validate_money_message(message):
     try:
         value = Decimal(message.text.strip().replace(",", "."))
+        if abs(value) > 99_999_999.99:
+            await message.answer(
+                "Слишком большое число. Сумма должна быть в "
+                "диапазоне от -100 млн до +100 млн, не включительно.\n"
+            )
+            return False, None
         return True, value
     except Exception:
         await message.answer(

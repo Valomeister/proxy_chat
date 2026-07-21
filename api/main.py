@@ -2,7 +2,7 @@ import asyncio
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Depends, HTTPException, Header, WebSocketDisconnect, status, WebSocket, Query
+from fastapi import FastAPI, Depends, HTTPException, Header, WebSocketDisconnect, status, WebSocket, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.dependencies.db import get_db
 from api.dependencies.auth import get_current_telegram_user
@@ -29,12 +29,14 @@ async def get_chats(
     session: AsyncSession = Depends(get_db),
     user: dict = Depends(get_current_telegram_user)
     ):
+    print('get_chats()')
 
     tg_id = user["id"]
 
     chats = await ChatService.get_user_chats(session, tg_id)
 
     return chats
+
 
 
 
@@ -45,7 +47,8 @@ async def chat_ws(
     init_data: str = Query(...),
     session: AsyncSession = Depends(get_db),
 ):
-    user = await get_current_telegram_user(authorization=f"tma {init_data}")
+    print('chat_ws()')
+    user = await get_current_telegram_user(authorization=f"tma {init_data}", websocket=websocket)
 
     tg_id = user["id"]
 

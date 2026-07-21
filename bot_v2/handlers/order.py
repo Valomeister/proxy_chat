@@ -144,11 +144,13 @@ async def process_paycheck(message: types.Message, state: FSMContext):
     await display_order_detail(message, order, message.from_user.id, usernames, in_place=False, back_dest='menu')
 
     await message.answer(
-        f"Ссылка для добавления исполнителя в чат: \n"
+        f"Ссылка для добавления исполнителя в чат по заказу \n"
+        f"<b>#{order.id} {order.title}</b>\n\n"
         f"t.me/transparent_chat_bot?start=winv_{order.id}"
     )
     await message.answer(
-        f"Ссылка для добавления клиента в чат: \n"
+        f"Ссылка для добавления клиента в чат по заказу \n"
+        f"<b>#{order.id} {order.title}</b>\n\n"
         f"t.me/transparent_chat_bot?start=cinv_{order.id}"
     )
 

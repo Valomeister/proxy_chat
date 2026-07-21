@@ -8,7 +8,7 @@ class NotificationChannel(Base):
     __tablename__ = "notification_channels"
 
     order_id: Mapped[int] = mapped_column(
-        ForeignKey("orders.id"),
+        ForeignKey("orders.id", ondelete="CASCADE"),
         primary_key=True,
     )
 

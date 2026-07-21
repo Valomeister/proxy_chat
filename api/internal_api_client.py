@@ -1,8 +1,12 @@
 import aiohttp
+import os
+from dotenv import load_dotenv
 
 
-MESSENGER_API_URL = "https://wdraft.online/api"
-BOT_API_URL = "http://localhost:8081/api"
+load_dotenv()
+
+MESSENGER_API_URL = os.getenv('MESSENGER_API_URL')
+BOT_API_URL = os.getenv('BOT_API_URL')
 
 class InternalApiClient:
     def __init__(self, internal_api_key):
@@ -26,6 +30,7 @@ class InternalApiClient:
         Send system message to messanger's chat
         """
         print('send_system_message()')
+        print(f'{MESSENGER_API_URL}/internal/chat/{order_id}/message')
         
         return await self._post(
             MESSENGER_API_URL,

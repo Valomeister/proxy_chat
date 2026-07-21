@@ -21,5 +21,6 @@ dp = Dispatcher()
 
 async def start_bot():
     await dp.start_polling(
-        bot
+        bot,
+        handle_signals=False,
     )

@@ -50,6 +50,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start(message: types.Message, state: FSMContext):
+    print('start()')
     await state.clear()
     async with SessionLocal() as session:
         tg_id = message.from_user.id

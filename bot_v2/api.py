@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
@@ -58,8 +59,10 @@ async def root():
         "ok": True
     }
 
-
+server = None
 async def start_api():
+
+    global server
 
     config = uvicorn.Config(
         app,
@@ -69,5 +72,7 @@ async def start_api():
     )
 
     server = uvicorn.Server(config)
+
+    server.install_signal_handlers = lambda: None
 
     await server.serve()
